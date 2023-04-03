@@ -73,7 +73,7 @@ int KMP(char *text, char *mode, int pos)
 
     NextVal(mode, next);    //求模式串的nextval数组
     int i = pos;    //文本串指针
-    int j = 1;      //修改j的初始值为0，原来为1
+    int j = 1;      //模式串指针
     printf("开始匹配：\n");
     while (i < textLength && j < modeLength)    //原有代码中,运算符为||,应该为&&
     {
