@@ -117,7 +117,7 @@ int KMP(char *text, char *mode, int pos)
             printf("· ");
         }
         printf("\n");
-        return i - modeLength + 1 + 1;//返回模式串在文本串中的位置,从1开始,所以+1,
+        return i - modeLength + 1 + 1;//返回模式串在文本串中的位置,从1开始,所以+1,但是i是从0开始的，所以还要+1
     } else
         return -1;
 }
