@@ -2,9 +2,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void Print(char *str)
+void PrintText(char *str)
 {
     for (int j = 0; j < strlen(str); j++)
+    {
+        printf("%c ", str[j]);
+    }
+    printf("\b \n");
+}
+
+void PrintMode(char *str)
+{
+    for (int j = 1; j < strlen(str); j++)
     {
         printf("%c ", str[j]);
     }
@@ -53,40 +62,33 @@ void NextVal(char *mode, int *nextVal)
     }
 }
 
-//对群里的KMP算法代码进行了修改，删除和改正了部分错误，添加了注释，并使其能够输出匹配过程
+//对群里的KMP算法代码进行了修改，删除和改正了部分错误，添加了注释，并使其能够输出匹配过程，可能还一些问题
 int KMP(char *text, char *mode, int pos)
 {
     int textLength = strlen(text);  //文本串长度
     int modeLength = strlen(mode);  //模式串长度
     int *next = (int *) malloc((modeLength + 1) * sizeof(int));
-    //原有的代码中，next数组的长度为modeLength，但是在求next数组时，j的取值范围为1~modeLength，所以next数组的长度应该为modeLength+1
+    //原有的代码中，next数组的长度为modeLength，但是在求next数组时，j的取值范围为0~modeLength，所以next数组的长度应该为modeLength+1
     //不修改会出现内存溢出错误：HEAP CORRUPTION DETECTED
 
     NextVal(mode, next);    //求模式串的nextval数组
     int i = pos;    //文本串指针
-    int j = 0;      //模式串指针
-
+    int j = 1;      //修改j的初始值为0，原来为1
     printf("开始匹配：\n");
     while (i < textLength && j < modeLength)    //原有代码中,运算符为||,应该为&&
     {
+
         if (j == 0 || text[i] == mode[j])   //j为0或者当前字符匹配成功
         {
-            i++;    //指针后移
+            i++;
             j++;
-        }
-        else
+        } else
         {   //当前字符匹配失败
             //打印匹配过程
-            Print(text);
-            for (int k = 0; k < i - j; k++)
-            {
-                printf("  ");
-            }
-            Print(mode);
-            for (int k = 0; k < i; k++)
-            {
-                printf("  ");
-            }
+            PrintText(text);
+            for (int k = 0; k < i - j + 1; k++) printf("  ");
+            PrintMode(mode);
+            for (int k = 0; k < i; k++) printf("  ");
             printf("^\n");
             printf("发现不匹配处，模式串向右移动%d位\n", j - next[j]);
             printf("\n");
@@ -98,24 +100,24 @@ int KMP(char *text, char *mode, int pos)
     if (j == modeLength)
     {   //打印匹配过程
         //打印文本串
-        Print(text);
+        PrintText(text);
 
-        for (int k = 0; k < i - j; k++)
+        for (int k = 0; k < i - j + 1; k++)
         {
             printf("  ");
         }
-        Print(mode);
+        PrintMode(mode);
 
-        for (int k = 0; k < i - j; k++)
+        for (int k = 0; k < i - j + 1; k++)
         {
             printf("  ");
         }
-        for (int k = 0; k < modeLength; k++)
+        for (int k = 0; k < modeLength - 1; k++)
         {
             printf("· ");
         }
         printf("\n");
-        return i - modeLength + 1; //+ 1;  //返回模式串在文本串中的位置,从1开始,所以+1,
+        return i - modeLength + 1 + 1;//返回模式串在文本串中的位置,从1开始,所以+1,
     } else
         return -1;
 }
@@ -129,12 +131,13 @@ int main()
     printf("请输入文本串：");
     scanf_s("%s", text, 100);
     //打印文本串
-    Print(text);
+    PrintText(text);
 
     printf("请输入模式串：");
-    scanf_s("%s", mode, 100);
+    mode[0] = '0';
+    scanf_s("%s", mode + 1, 100 - 1);
     //打印模式串
-    Print(mode);
+    PrintMode(mode);
     printf("\n");
     int pos = KMP(text, mode, 0);
     if (pos == -1)
