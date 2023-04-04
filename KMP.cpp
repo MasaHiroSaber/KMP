@@ -1,6 +1,6 @@
 #include <cstring>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 void PrintText(char *str)
 {
@@ -132,7 +132,6 @@ int main()
     scanf_s("%s", text, 100);
     //打印文本串
     PrintText(text);
-
     printf("请输入模式串：");
     mode[0] = '0';
     scanf_s("%s", mode + 1, 100 - 1);
@@ -141,7 +140,7 @@ int main()
     printf("\n");
     int pos = KMP(text, mode, 0);
     if (pos == -1)
-        printf("匹配失败\n");
+        printf("匹配失败，未找到对应文本\n");
     else
         printf("匹配成功，模式串在文本串中的位置为：%d\n", pos);
     free(text);
